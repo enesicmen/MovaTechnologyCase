@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">MovaTechnologyCase</string>
+
+    <!-- Mock Wallet Repository -->
+    <string name="wallet_data_could_not_be_loaded">Wallet data could not be loaded</string>
 </resources>
