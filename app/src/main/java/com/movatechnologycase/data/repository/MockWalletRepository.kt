@@ -1,60 +1,61 @@
 package com.movatechnologycase.data.repository
 
-import android.content.Context
-import androidx.compose.ui.res.stringResource
-import com.movatechnologycase.R
-import com.movatechnologycase.data.dto.WalletResponseDto
-import com.movatechnologycase.data.mapper.toDomain
+import android.content.res.AssetManager
 import com.movatechnologycase.domain.model.WalletDashboard
 import com.movatechnologycase.domain.repository.WalletRepository
 import java.io.IOException
-import java.util.concurrent.atomic.AtomicBoolean
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
-import kotlin.time.Duration.Companion.milliseconds
 
-class MockWalletRepository(
-    context: Context,
-    private val scenario: WalletScenario = WalletScenario.LOADED
+class MockWalletRepository @Inject constructor(
+    private val assetManager: AssetManager,
+    private val json: Json,
+    private val scenarioController: WalletScenarioController
 ) : WalletRepository {
-
-    private val applicationContext = context.applicationContext
-
-    private val shouldFailNextRequest = AtomicBoolean(scenario == WalletScenario.ERROR)
-
-    private val json = Json { ignoreUnknownKeys = true }
 
     override suspend fun getDashboard(): WalletDashboard =
         withContext(Dispatchers.IO) {
-            delay(duration = 800.milliseconds)
+            delay(600)
 
-            if (shouldFailNextRequest.getAndSet(false)) throw IOException(
-                applicationContext.getString(
-                    R.string.wallet_data_could_not_be_loaded
+            val scenario =
+                scenarioController.getScenario()
+
+            if (
+                scenario == WalletScenario.ERROR &&
+                scenarioController.consumeError()
+            ) {
+                throw IOException(
+                    "Wallet data could not be loaded"
                 )
-            )
-
-            when (scenario) {
-                WalletScenario.EMPTY -> readWalletFile(fileName = "mock_wallet_empty.json")
-                WalletScenario.LOADED,
-                WalletScenario.ERROR -> readWalletFile(fileName = "mock_wallet.json")
             }
+
+            val fileName = when (scenario) {
+                WalletScenario.EMPTY ->
+                    "mock_wallet_empty.json"
+
+                WalletScenario.LOADED,
+                WalletScenario.ERROR ->
+                    "mock_wallet.json"
+            }
+
+            readWalletFile(fileName)
         }
 
     private fun readWalletFile(
         fileName: String
     ): WalletDashboard {
-        val jsonContent = applicationContext.assets
+        val jsonContent = assetManager
             .open(fileName)
             .bufferedReader()
             .use { reader ->
                 reader.readText()
             }
 
-        return json
-            .decodeFromString<WalletResponseDto>(jsonContent)
-            .toDomain()
+        return json.decodeFromString(
+            string = jsonContent
+        )
     }
 }

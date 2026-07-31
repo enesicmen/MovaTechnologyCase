@@ -1,5 +1,6 @@
 package com.movatechnologycase.presentation.wallet
 
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -30,6 +32,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -47,6 +50,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.movatechnologycase.data.repository.WalletScenario
 import com.movatechnologycase.domain.model.Child
 import com.movatechnologycase.domain.model.Transaction
 import com.movatechnologycase.domain.model.TransactionType
@@ -62,41 +66,113 @@ import java.util.TimeZone
 fun WalletDashboardRoute(
     viewModel: WalletDashboardViewModel
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val uiState by
+    viewModel.uiState.collectAsStateWithLifecycle()
+
+    val selectedScenario by
+    viewModel.selectedScenario
+        .collectAsStateWithLifecycle()
 
     Scaffold(
         bottomBar = {
             WalletBottomNavigation()
         }
     ) { paddingValues ->
-        when (val state = uiState) {
-            WalletDashboardUiState.Loading -> {
-                LoadingContent(
-                    modifier = Modifier.padding(paddingValues)
-                )
-            }
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            WalletScenarioSelector(
+                selectedScenario = selectedScenario,
+                onScenarioSelected =
+                    viewModel::selectScenario
+            )
 
-            is WalletDashboardUiState.Loaded -> {
-                DashboardContent(
-                    dashboard = state.dashboard,
-                    showEmptyTransactions = false,
-                    modifier = Modifier.padding(paddingValues)
-                )
-            }
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+            ) {
+                when (val state = uiState) {
+                    WalletDashboardUiState.Loading -> {
+                        LoadingContent()
+                    }
 
-            is WalletDashboardUiState.Empty -> {
-                DashboardContent(
-                    dashboard = state.dashboard,
-                    showEmptyTransactions = true,
-                    modifier = Modifier.padding(paddingValues)
-                )
-            }
+                    is WalletDashboardUiState.Loaded -> {
+                        DashboardContent(
+                            dashboard = state.dashboard,
+                            showEmptyTransactions = false
+                        )
+                    }
 
-            is WalletDashboardUiState.Error -> {
-                ErrorContent(
-                    message = state.message,
-                    onRetry = viewModel::retry,
-                    modifier = Modifier.padding(paddingValues)
+                    is WalletDashboardUiState.Empty -> {
+                        DashboardContent(
+                            dashboard = state.dashboard,
+                            showEmptyTransactions = true
+                        )
+                    }
+
+                    is WalletDashboardUiState.Error -> {
+                        ErrorContent(
+                            message = state.message,
+                            onRetry = viewModel::retry
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+@Composable
+private fun WalletScenarioSelector(
+    selectedScenario: WalletScenario,
+    onScenarioSelected: (WalletScenario) -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(
+                horizontal = 20.dp,
+                vertical = 8.dp
+            )
+    ) {
+        Text(
+            text = "Demo States",
+            style = MaterialTheme.typography.labelLarge,
+            color =
+                MaterialTheme.colorScheme.onSurfaceVariant
+        )
+
+        Row(
+            modifier = Modifier
+                .horizontalScroll(
+                    rememberScrollState()
+                ),
+            horizontalArrangement =
+                Arrangement.spacedBy(8.dp)
+        ) {
+            WalletScenario.entries.forEach { scenario ->
+                FilterChip(
+                    selected =
+                        selectedScenario == scenario,
+                    onClick = {
+                        onScenarioSelected(scenario)
+                    },
+                    label = {
+                        Text(
+                            text = when (scenario) {
+                                WalletScenario.LOADED ->
+                                    "Loaded"
+
+                                WalletScenario.EMPTY ->
+                                    "Empty"
+
+                                WalletScenario.ERROR ->
+                                    "Error"
+                            }
+                        )
+                    }
                 )
             }
         }
@@ -224,7 +300,7 @@ private fun WalletBalanceCard(
 
             Button(
                 onClick = {
-                    // Case kapsamında yalnızca UI aksiyonu.
+
                 }
             ) {
                 Icon(
@@ -319,9 +395,6 @@ private fun TransactionRow(
 
                 TransactionType.EXPENSE ->
                     MaterialTheme.colorScheme.errorContainer
-
-                TransactionType.UNKNOWN ->
-                    MaterialTheme.colorScheme.surfaceVariant
             }
         ) {
             Box(
@@ -334,9 +407,6 @@ private fun TransactionRow(
 
                         TransactionType.EXPENSE ->
                             Icons.Outlined.ArrowUpward
-
-                        TransactionType.UNKNOWN ->
-                            Icons.Outlined.ReceiptLong
                     },
                     contentDescription = null
                 )
@@ -373,9 +443,6 @@ private fun TransactionRow(
 
                 TransactionType.EXPENSE ->
                     MaterialTheme.colorScheme.error
-
-                TransactionType.UNKNOWN ->
-                    MaterialTheme.colorScheme.onSurface
             }
         )
     }
@@ -556,7 +623,6 @@ private fun formatTransactionAmount(
     return when (transaction.type) {
         TransactionType.INCOME -> "+$formattedAmount"
         TransactionType.EXPENSE -> "-$formattedAmount"
-        TransactionType.UNKNOWN -> formattedAmount
     }
 }
 

@@ -1,7 +1,14 @@
 package com.movatechnologycase.domain.model
 
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
 enum class TransactionType {
+
+    @SerialName("income")
     INCOME,
-    EXPENSE,
-    UNKNOWN
+
+    @SerialName("expense")
+    EXPENSE
 }
