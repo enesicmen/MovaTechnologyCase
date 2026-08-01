@@ -13,33 +13,23 @@ class DataStoreSecureCredentialStorage @Inject constructor(
     private val dataStore: DataStore<Preferences>
 ) : SecureCredentialStorage {
 
-    override suspend fun save(
-        credentials: EncryptedCredentials
-    ) {
-        dataStore.edit { preferences ->
-            preferences[CIPHER_TEXT_KEY] =
-                credentials.cipherText
-
-            preferences[INITIALIZATION_VECTOR_KEY] =
-                credentials.initializationVector
+    override suspend fun save(credentials: EncryptedCredentials) {
+        dataStore.edit { preferences -> preferences[CIPHER_TEXT_KEY] = credentials.cipherText
+            preferences[INITIALIZATION_VECTOR_KEY] = credentials.initializationVector
         }
     }
 
     override suspend fun read(): EncryptedCredentials? {
         val preferences = dataStore.data.first()
 
-        val cipherText =
-            preferences[CIPHER_TEXT_KEY]
+        val cipherText = preferences[CIPHER_TEXT_KEY]
 
-        val initializationVector =
-            preferences[INITIALIZATION_VECTOR_KEY]
+        val initializationVector = preferences[INITIALIZATION_VECTOR_KEY]
 
         if (
             cipherText.isNullOrBlank() ||
             initializationVector.isNullOrBlank()
-        ) {
-            return null
-        }
+        ) return null
 
         return EncryptedCredentials(
             cipherText = cipherText,
@@ -49,21 +39,11 @@ class DataStoreSecureCredentialStorage @Inject constructor(
     }
 
     override suspend fun clear() {
-        dataStore.edit { preferences ->
-            preferences.clear()
-        }
+        dataStore.edit { preferences -> preferences.clear() }
     }
 
     private companion object {
-
-        val CIPHER_TEXT_KEY =
-            stringPreferencesKey(
-                name = "credentials_cipher_text"
-            )
-
-        val INITIALIZATION_VECTOR_KEY =
-            stringPreferencesKey(
-                name = "credentials_initialization_vector"
-            )
+        val CIPHER_TEXT_KEY = stringPreferencesKey(name = "credentials_cipher_text")
+        val INITIALIZATION_VECTOR_KEY = stringPreferencesKey(name = "credentials_initialization_vector")
     }
 }

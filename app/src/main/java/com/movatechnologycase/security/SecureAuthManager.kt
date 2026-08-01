@@ -17,6 +17,7 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
 
+@Suppress("unused")
 @Singleton
 class SecureAuthManager @Inject constructor(
     private val cipherProvider: BiometricCipherProvider,
@@ -245,7 +246,7 @@ class SecureAuthManager @Inject constructor(
         }
     }
 
-    private suspend fun decryptCredentials(
+    private fun decryptCredentials(
         cipher: Cipher,
         encryptedCredentials: EncryptedCredentials
     ): AuthResult {

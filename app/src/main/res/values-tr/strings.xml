@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MovaTechnologyCase</string>
+
+    <!-- Mock Wallet Repository -->
+    <string name="wallet_data_could_not_be_loaded">Cüzdan verileri yüklenemedi.</string>
+
+    <!-- Wallet Dashboard Screen -->
+    <string name="wallet_information_could_not_be_found">Cüzdan bilgileri bulunamadı.</string>
+
+    <!-- Wallet Dashboard ViewModel -->
+    <string name="wallet_information_could_not_be_uploaded">Cüzdan bilgileri yüklenemedi.</string>
+
+    <!-- Wallet Dashboard Components -->
+    <string name="my_wallet">Cüzdanım</string>
+    <string name="manage_your_balance_and_transactions">Bakiyenizi ve işlemlerinizi yönetin.</string>
+    <string name="demo_status">Demo durumu</string>
+    <string name="available_balance">Kullanılabilir bakiye</string>
+    <string name="hide">Gizle</string>
+    <string name="show">Göster</string>
+    <string name="main_wallet">Ana cüzdan</string>
+    <string name="secure_digital_account">Güvenli dijital hesap</string>
+    <string name="fast_transactions">Hızlı işlemler</string>
+    <string name="add_money">Para ekle</string>
+    <string name="linked_accounts">Bağlı hesaplar</string>
+    <string name="active">Aktif</string>
+    <string name="balance">Bakiye</string>
+    <string name="final_processes">Son işlemler</string>
+    <string name="the_most_recent_money_movements">En güncel para hareketleri</string>
+    <string name="no_transactions_have_been_made_yet">Henüz işlem yapılmadı.</string>
+    <string name="your_first_money_transaction_will_be_displayed_here">İlk para işleminiz burada görüntülenecek.</string>
+    <string name="the_wallet_is_being_prepared">Cüzdan hazırlanıyor.</string>
+    <string name="balance_and_transactions_are_being_loaded">Bakiye ve işlemler yükleniyor.</string>
+    <string name="something_went_wrong">Bir şeyler ters gitti.</string>
+    <string name="try_again">Tekrar dene</string>
+    <string name="wallet_scenario_loaded">Dolu</string>
+    <string name="wallet_scenario_empty">Boş</string>
+    <string name="wallet_scenario_error">Hata</string>
+    <string name="there_is_no_linked_child_account_yet">Henüz bağlı çocuk hesabı bulunmuyor.</string>
+    <string name="wallet">Cüzdan</string>
+    <string name="activity">Hareketler</string>
+    <string name="profile">Profil</string>
+
+    <!-- Preview -->
+    <string name="preview_child_mert_name">Mert Kaya</string>
+    <string name="preview_child_ece_name">Ece Kaya</string>
+    <string name="preview_child_can_name">Can Kaya</string>
+    <string name="preview_grade_eighth">8. Sınıf</string>
+    <string name="preview_grade_fifth">5. Sınıf</string>
+    <string name="preview_grade_third">3. Sınıf</string>
+    <string name="preview_transaction_wallet_top_up">Cüzdana para eklendi</string>
+    <string name="preview_transaction_school_cafeteria">Okul kantini</string>
+    <string name="preview_transaction_bookstore">Kitap mağazası</string>
+    <string name="preview_wallet_error">Cüzdan bilgileri yüklenemedi.</string>
+    <string name="preview_currency_code">TRY</string>
+    <string name="preview_total_balance">₺12.480,50</string>
+    <string name="preview_child_mert_grade">8. Sınıf</string>
+    <string name="preview_child_mert_balance">₺1.250,00</string>
+    <string name="preview_child_ece_grade">5. Sınıf</string>
+    <string name="preview_child_ece_balance">₺780,50</string>
+    <string name="preview_transaction_wallet_top_up_date">01 Ağu, 10:30</string>
+    <string name="preview_transaction_wallet_top_up_amount">+₺2.000,00</string>
+    <string name="preview_transaction_school_cafeteria_date">31 Tem, 13:42</string>
+    <string name="preview_transaction_school_cafeteria_amount">-₺145,50</string>
+
+</resources>

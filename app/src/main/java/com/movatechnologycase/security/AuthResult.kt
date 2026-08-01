@@ -2,13 +2,9 @@ package com.movatechnologycase.security
 
 sealed interface AuthResult {
 
-    data class Success(
-        val credentials: AuthCredentials
-    ) : AuthResult
+    data class Success(val credentials: AuthCredentials) : AuthResult
 
     data object Cancelled : AuthResult
-
-    data object AuthenticationFailed : AuthResult
 
     data object TemporaryLockout : AuthResult
 
@@ -24,7 +20,5 @@ sealed interface AuthResult {
 
     data object StorageCorrupted : AuthResult
 
-    data class Error(
-        val message: String
-    ) : AuthResult
+    data class Error(val message: String) : AuthResult
 }
