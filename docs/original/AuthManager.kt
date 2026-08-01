@@ -71,7 +71,7 @@ class AuthManager private constructor(context: Context) {
             .setTitle("Login to your wallet")
             .setAllowedAuthenticators(
                 BiometricPrompt.Authenticators.BIOMETRIC_WEAK or
-                    BiometricPrompt.Authenticators.DEVICE_CREDENTIAL
+                        BiometricPrompt.Authenticators.DEVICE_CREDENTIAL
             )
             .build()
 
