@@ -36,10 +36,13 @@ The project demonstrates:
 
 ## Requirements
 
-- Android Studio
+- Android Studio Quail 2 or newer
 - JDK 17
 - Minimum SDK 24
-- Target SDK 36
+- Compile SDK 37
+- Target SDK 37
+- Android Gradle Plugin 9.3.0
+- Gradle 9.5.0
 - Android emulator or physical device
 
 Biometric testing requires a device or emulator that supports strong biometrics and has a fingerprint or face enrolled.
@@ -51,7 +54,7 @@ Biometric testing requires a device or emulator that supports strong biometrics 
 1. Clone the repository:
 
 ```bash
-git clone <https://github.com/enesicmen/MovaTechnologyCase>
+git clone https://github.com/enesicmen/MovaTechnologyCase.git
 ```
 
 2. Open the project in Android Studio.
