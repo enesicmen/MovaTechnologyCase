@@ -9,12 +9,14 @@ plugins {
 android {
     namespace = "com.movatechnologycase"
 
-    compileSdk = 37
+    compileSdk {
+        version = release(37)
+    }
 
     defaultConfig {
         applicationId = "com.movatechnologycase"
         minSdk = 24
-        targetSdk = 36
+        targetSdk = 37
         versionCode = 1
         versionName = "1.0"
 
