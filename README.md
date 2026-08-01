@@ -350,4 +350,12 @@ All architectural and security decisions were reviewed manually before being inc
 
 ## Wallet Dashboard Demo
 
+Demonstrates the Loaded, Empty, and Error states, Retry flow, linked children, recent transactions.
+
 https://github.com/user-attachments/assets/eaecb270-009b-4f81-8d39-bae59a48ad56
+
+### Biometric Security Demo
+
+Demonstrates secure credential encryption, biometric-protected decryption, and complete logout cleanup.
+
+https://github.com/user-attachments/assets/c396f723-d778-4605-95e0-de97be635f00
