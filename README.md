@@ -347,3 +347,7 @@ The AI-assisted review document contains:
 - Final decisions made through human engineering judgment
 
 All architectural and security decisions were reviewed manually before being included.
+
+## Wallet Dashboard Demo
+
+https://github.com/user-attachments/assets/eaecb270-009b-4f81-8d39-bae59a48ad56
