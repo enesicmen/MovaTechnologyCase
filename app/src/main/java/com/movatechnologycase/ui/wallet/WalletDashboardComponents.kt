@@ -54,7 +54,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -105,13 +104,7 @@ fun WalletLoadedContent(
                 balanceText = dashboard.balanceText,
                 currencyCode = dashboard.currencyCode,
                 isBalanceVisible = isBalanceVisible,
-                onVisibilityClick =
-                    onBalanceVisibilityClick
-            )
-        }
-
-        item {
-            WalletQuickActions(
+                onVisibilityClick = onBalanceVisibilityClick,
                 onTopUpClick = onTopUpClick
             )
         }
@@ -324,15 +317,14 @@ fun WalletBalanceCard(
     balanceText: String,
     currencyCode: String,
     isBalanceVisible: Boolean,
-    onVisibilityClick: () -> Unit
+    onVisibilityClick: () -> Unit,
+    onTopUpClick: () -> Unit
 ) {
     Box(
         modifier = modifier
             .fillMaxWidth()
             .height(218.dp)
-            .clip(
-                RoundedCornerShape(28.dp)
-            )
+            .clip(RoundedCornerShape(28.dp))
             .background(
                 brush = Brush.linearGradient(
                     colors = listOf(
@@ -352,9 +344,7 @@ fun WalletBalanceCard(
                 )
                 .clip(CircleShape)
                 .background(
-                    Color.White.copy(
-                        alpha = 0.08f
-                    )
+                    Color.White.copy(alpha = 0.08f)
                 )
         )
 
@@ -367,9 +357,7 @@ fun WalletBalanceCard(
                 )
                 .clip(CircleShape)
                 .background(
-                    Colors.Cyan.copy(
-                        alpha = 0.16f
-                    )
+                    Colors.Cyan.copy(alpha = 0.16f)
                 )
         )
 
@@ -380,257 +368,128 @@ fun WalletBalanceCard(
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment =
-                    Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = stringResource(
-                        id = R.string
-                            .available_balance
+                        id = R.string.available_balance
                     ),
-                    color = Color.White.copy(
-                        alpha = 0.78f
-                    ),
-                    style = MaterialTheme
-                        .typography
-                        .bodyMedium
+                    color = Color.White.copy(alpha = 0.78f),
+                    style = MaterialTheme.typography.bodyMedium
                 )
 
-                Spacer(
-                    modifier = Modifier.weight(1f)
-                )
+                Spacer(modifier = Modifier.weight(1f))
 
                 TextButton(
                     onClick = onVisibilityClick,
-                    contentPadding =
-                        PaddingValues(
-                            horizontal = 8.dp,
-                            vertical = 0.dp
-                        ),
-                    colors =
-                        ButtonDefaults
-                            .textButtonColors(
-                                contentColor =
-                                    Color.White
-                            )
+                    contentPadding = PaddingValues(
+                        horizontal = 8.dp,
+                        vertical = 0.dp
+                    ),
+                    colors = ButtonDefaults.textButtonColors(
+                        contentColor = Color.White
+                    )
                 ) {
                     Text(
-                        text = if (
-                            isBalanceVisible
-                        ) {
-                            stringResource(
-                                id = R.string.hide
-                            )
+                        text = if (isBalanceVisible) {
+                            stringResource(id = R.string.hide)
                         } else {
-                            stringResource(
-                                id = R.string.show
-                            )
+                            stringResource(id = R.string.show)
                         }
                     )
                 }
             }
 
-            Spacer(
-                modifier = Modifier.height(10.dp)
-            )
+            Spacer(modifier = Modifier.height(10.dp))
 
-            Text(
-                text = if (isBalanceVisible) {
-                    balanceText
-                } else {
-                    "••••••"
-                },
-                color = Color.White,
-                fontSize = 34.sp,
-                fontWeight = FontWeight.Bold,
-                maxLines = 1,
-                overflow =
-                    TextOverflow.Ellipsis
-            )
+            Row(
+                verticalAlignment = Alignment.Bottom
+            ) {
+                Text(
+                    modifier = Modifier.weight(1f),
+                    text = if (isBalanceVisible) {
+                        balanceText
+                    } else {
+                        "••••••"
+                    },
+                    color = Color.White,
+                    fontSize = 34.sp,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
 
-            Spacer(
-                modifier = Modifier.weight(1f)
-            )
+                Surface(
+                    shape = RoundedCornerShape(50.dp),
+                    color = Color.White.copy(alpha = 0.14f)
+                ) {
+                    Text(
+                        modifier = Modifier.padding(
+                            horizontal = 12.dp,
+                            vertical = 7.dp
+                        ),
+                        text = currencyCode,
+                        color = Color.White,
+                        style = MaterialTheme.typography.labelMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.weight(1f))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment =
-                    Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Column {
+                Column(
+                    modifier = Modifier.weight(1f)
+                ) {
                     Text(
                         text = stringResource(
                             id = R.string.main_wallet
                         ),
                         color = Color.White,
-                        fontWeight =
-                            FontWeight.SemiBold
+                        fontWeight = FontWeight.SemiBold
                     )
 
                     Text(
                         text = stringResource(
-                            id = R.string
-                                .secure_digital_account
+                            id = R.string.secure_digital_account
                         ),
-                        color = Color.White.copy(
-                            alpha = 0.65f
-                        ),
-                        style = MaterialTheme
-                            .typography
-                            .bodySmall
+                        color = Color.White.copy(alpha = 0.65f),
+                        style = MaterialTheme.typography.bodySmall
                     )
                 }
 
-                Spacer(
-                    modifier = Modifier.weight(1f)
-                )
-
-                Surface(
-                    shape =
-                        RoundedCornerShape(50.dp),
-                    color = Color.White.copy(
-                        alpha = 0.14f
+                Button(
+                    onClick = onTopUpClick,
+                    shape = RoundedCornerShape(14.dp),
+                    contentPadding = PaddingValues(
+                        horizontal = 16.dp,
+                        vertical = 10.dp
+                    ),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.White,
+                        contentColor = Colors.Navy
                     )
-                ) {
-                    Text(
-                        modifier = Modifier.padding(
-                            horizontal = 14.dp,
-                            vertical = 8.dp
-                        ),
-                        text = currencyCode,
-                        color = Color.White,
-                        fontWeight =
-                            FontWeight.Bold
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun WalletQuickActions(
-    modifier: Modifier = Modifier,
-    onTopUpClick: () -> Unit
-) {
-    Column(
-        modifier = modifier.fillMaxWidth()
-    ) {
-        Text(
-            text = stringResource(
-                id = R.string.fast_transactions
-            ),
-            color = MaterialTheme
-                .colorScheme
-                .onBackground,
-            style = MaterialTheme
-                .typography
-                .titleMedium,
-            fontWeight = FontWeight.Bold
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement =
-                Arrangement.spacedBy(10.dp)
-        ) {
-            WalletQuickActionItem(
-                modifier = Modifier.weight(1f),
-                title = stringResource(
-                    id = R.string.add_money
-                ),
-                icon = Icons.Outlined.Add,
-                iconColor = MaterialTheme
-                    .colorScheme
-                    .primary,
-                backgroundColor = MaterialTheme
-                    .colorScheme
-                    .primaryContainer,
-                onClick = onTopUpClick
-            )
-        }
-    }
-}
-
-@Composable
-fun WalletQuickActionItem(
-    modifier: Modifier = Modifier,
-    title: String,
-    icon: ImageVector,
-    iconColor: Color,
-    backgroundColor: Color,
-    onClick: () -> Unit
-) {
-    Card(
-        modifier = modifier.clickable(
-            onClick = onClick
-        ),
-        shape = RoundedCornerShape(18.dp),
-        colors = CardDefaults.cardColors(
-            containerColor =
-                MaterialTheme
-                    .colorScheme
-                    .surface
-        ),
-        elevation =
-            CardDefaults.cardElevation(
-                defaultElevation = 0.dp
-            ),
-        border = BorderStroke(
-            width = 1.dp,
-            color = MaterialTheme
-                .colorScheme
-                .outlineVariant
-        )
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                    horizontal = 6.dp,
-                    vertical = 14.dp
-                ),
-            horizontalAlignment =
-                Alignment.CenterHorizontally
-        ) {
-            Surface(
-                modifier = Modifier.size(42.dp),
-                shape = CircleShape,
-                color = backgroundColor
-            ) {
-                Box(
-                    contentAlignment =
-                        Alignment.Center
                 ) {
                     Icon(
-                        modifier =
-                            Modifier.size(21.dp),
-                        imageVector = icon,
-                        contentDescription = null,
-                        tint = iconColor
+                        modifier = Modifier.size(18.dp),
+                        imageVector = Icons.Outlined.Add,
+                        contentDescription = null
+                    )
+
+                    Spacer(modifier = Modifier.width(6.dp))
+
+                    Text(
+                        text = stringResource(
+                            id = R.string.add_money
+                        ),
+                        fontWeight = FontWeight.Bold
                     )
                 }
             }
-
-            Spacer(
-                modifier = Modifier.height(9.dp)
-            )
-
-            Text(
-                text = title,
-                color = MaterialTheme
-                    .colorScheme
-                    .onSurface,
-                style = MaterialTheme
-                    .typography
-                    .labelMedium,
-                fontWeight =
-                    FontWeight.SemiBold,
-                maxLines = 1,
-                textAlign = TextAlign.Center
-            )
         }
     }
 }

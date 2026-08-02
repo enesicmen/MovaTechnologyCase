@@ -185,7 +185,7 @@ No manual ViewModel factory is used.
 The ViewModel exposes the screen state through:
 
 ```kotlin
-StateFlow<WalletDashboardContract>
+StateFlow<WalletDashboardContract.UiState>
 ```
 
 The Compose UI observes state with:
@@ -217,6 +217,8 @@ Income and expense information is not communicated through color alone. Differen
 ---
 
 ## Security Review
+
+The manual review was completed before using any AI-assisted review tool.
 
 The original insecure `AuthManager.kt` file is stored at:
 
