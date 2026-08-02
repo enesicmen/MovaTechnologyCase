@@ -350,11 +350,19 @@ The AI-assisted review document contains:
 
 All architectural and security decisions were reviewed manually before being included.
 
-## Wallet Dashboard Demo
+## Demo Videos
 
-Demonstrates the Loaded, Empty, and Error states, Retry flow, linked children, recent transactions.
+### Light Theme Demo
 
-https://github.com/user-attachments/assets/eaecb270-009b-4f81-8d39-bae59a48ad56
+Demonstrates the Wallet Dashboard in Light mode, including Loaded, Empty, and Error states and the Retry flow.
+
+https://github.com/user-attachments/assets/084c707d-a981-41a1-bb86-bb7fad8cab65
+
+### Dark Theme Demo
+
+Demonstrates the Wallet Dashboard in Dark mode.
+
+https://github.com/user-attachments/assets/30d5430a-0d52-4748-8668-715d79b337cf
 
 ### Biometric Security Demo
 
