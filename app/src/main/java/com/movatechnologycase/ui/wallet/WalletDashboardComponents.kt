@@ -1,5 +1,6 @@
 package com.movatechnologycase.ui.wallet
 
+import android.content.res.Configuration
 import androidx.annotation.StringRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -23,6 +24,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ReceiptLong
 import androidx.compose.material.icons.outlined.AccountBalanceWallet
@@ -63,6 +65,7 @@ import androidx.compose.ui.unit.sp
 import com.movatechnologycase.R
 import com.movatechnologycase.core.design.Colors
 import com.movatechnologycase.data.repository.WalletScenario
+import com.movatechnologycase.ui.theme.MovaTechnologyCaseTheme
 
 @Composable
 fun WalletLoadedContent(
@@ -102,7 +105,8 @@ fun WalletLoadedContent(
                 balanceText = dashboard.balanceText,
                 currencyCode = dashboard.currencyCode,
                 isBalanceVisible = isBalanceVisible,
-                onVisibilityClick = onBalanceVisibilityClick
+                onVisibilityClick =
+                    onBalanceVisibilityClick
             )
         }
 
@@ -133,31 +137,28 @@ fun WalletStateContent(
     onScenarioSelected: (WalletScenario) -> Unit,
     content: @Composable () -> Unit
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .statusBarsPadding()
-            .padding(
-                horizontal = 20.dp,
-                vertical = 18.dp
-            )
-    ) {
-        WalletHeader()
-
-        Spacer(modifier = Modifier.height(18.dp))
-
-        WalletScenarioSelector(
-            selectedScenario = selectedScenario,
-            onScenarioSelected = onScenarioSelected
-        )
-
-        Box(
+    androidx.compose.foundation.rememberScrollState().let { scrollState ->
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f),
-            contentAlignment = Alignment.Center
+                .fillMaxSize()
+                .statusBarsPadding()
+                .verticalScroll(scrollState)
+                .padding(horizontal = 20.dp, vertical = 18.dp)
         ) {
+            WalletHeader()
+
+            Spacer(modifier = Modifier.height(18.dp))
+
+            WalletScenarioSelector(
+                selectedScenario = selectedScenario,
+                onScenarioSelected = onScenarioSelected
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
             content()
+
+            Spacer(modifier = Modifier.height(24.dp))
         }
     }
 }
@@ -174,8 +175,12 @@ fun WalletHeader(
             modifier = Modifier.weight(1f)
         ) {
             Text(
-                text = stringResource(id = R.string.my_wallet),
-                color = Colors.TextPrimary,
+                text = stringResource(
+                    id = R.string.my_wallet
+                ),
+                color = MaterialTheme
+                    .colorScheme
+                    .onBackground,
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -183,45 +188,62 @@ fun WalletHeader(
             Spacer(modifier = Modifier.height(4.dp))
 
             Text(
-                text = stringResource(id = R.string.manage_your_balance_and_transactions),
-                color = Colors.TextSecondary,
-                style = MaterialTheme.typography.bodyMedium
+                text = stringResource(
+                    id = R.string
+                        .manage_your_balance_and_transactions
+                ),
+                color = MaterialTheme
+                    .colorScheme
+                    .onSurfaceVariant,
+                style = MaterialTheme
+                    .typography
+                    .bodyMedium
             )
         }
 
         Surface(
             modifier = Modifier.size(52.dp),
             shape = CircleShape,
-            color = Colors.BlueSoft
+            color = MaterialTheme
+                .colorScheme
+                .primaryContainer
         ) {
             Box(
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     modifier = Modifier.size(26.dp),
-                    imageVector = Icons.Outlined.AccountBalanceWallet,
+                    imageVector =
+                        Icons.Outlined.AccountBalanceWallet,
                     contentDescription = null,
-                    tint = Colors.Blue
+                    tint = MaterialTheme
+                        .colorScheme
+                        .primary
                 )
             }
         }
     }
 }
 
-
 @Composable
 fun WalletScenarioSelector(
     modifier: Modifier = Modifier,
     selectedScenario: WalletScenario,
-    onScenarioSelected: (WalletScenario) -> Unit,
+    onScenarioSelected: (WalletScenario) -> Unit
 ) {
     Column(
         modifier = modifier.fillMaxWidth()
     ) {
         Text(
-            text = stringResource(id = R.string.demo_status),
-            color = Colors.TextSecondary,
-            style = MaterialTheme.typography.labelMedium,
+            text = stringResource(
+                id = R.string.demo_status
+            ),
+            color = MaterialTheme
+                .colorScheme
+                .onSurfaceVariant,
+            style = MaterialTheme
+                .typography
+                .labelMedium,
             fontWeight = FontWeight.Medium
         )
 
@@ -230,40 +252,65 @@ fun WalletScenarioSelector(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(14.dp))
-                .background(Color(0xFFECEFF5))
+                .clip(
+                    RoundedCornerShape(14.dp)
+                )
+                .background(
+                    MaterialTheme
+                        .colorScheme
+                        .surfaceVariant
+                )
                 .padding(4.dp),
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
+            horizontalArrangement =
+                Arrangement.spacedBy(4.dp)
         ) {
             WalletScenario.entries.forEach { scenario ->
-                val selected = selectedScenario == scenario
+                val selected =
+                    selectedScenario == scenario
 
                 Box(
                     modifier = Modifier
                         .weight(1f)
-                        .clip(RoundedCornerShape(11.dp))
+                        .clip(
+                            RoundedCornerShape(11.dp)
+                        )
                         .background(
                             if (selected) {
-                                Colors.Navy
+                                MaterialTheme
+                                    .colorScheme
+                                    .primary
                             } else {
                                 Color.Transparent
                             }
                         )
                         .clickable {
-                            onScenarioSelected(scenario)
+                            onScenarioSelected(
+                                scenario
+                            )
                         }
                         .padding(vertical = 10.dp),
-                    contentAlignment = Alignment.Center
+                    contentAlignment =
+                        Alignment.Center
                 ) {
                     Text(
-                        text = stringResource(id = scenario.displayNameRes()),
+                        text = stringResource(
+                            id = scenario
+                                .displayNameRes()
+                        ),
                         color = if (selected) {
-                            Color.White
+                            MaterialTheme
+                                .colorScheme
+                                .onPrimary
                         } else {
-                            Colors.TextSecondary
+                            MaterialTheme
+                                .colorScheme
+                                .onSurfaceVariant
                         },
-                        style = MaterialTheme.typography.labelLarge,
-                        fontWeight = FontWeight.SemiBold
+                        style = MaterialTheme
+                            .typography
+                            .labelLarge,
+                        fontWeight =
+                            FontWeight.SemiBold
                     )
                 }
             }
@@ -283,7 +330,9 @@ fun WalletBalanceCard(
         modifier = modifier
             .fillMaxWidth()
             .height(218.dp)
-            .clip(RoundedCornerShape(28.dp))
+            .clip(
+                RoundedCornerShape(28.dp)
+            )
             .background(
                 brush = Brush.linearGradient(
                     colors = listOf(
@@ -303,7 +352,9 @@ fun WalletBalanceCard(
                 )
                 .clip(CircleShape)
                 .background(
-                    Color.White.copy(alpha = 0.08f)
+                    Color.White.copy(
+                        alpha = 0.08f
+                    )
                 )
         )
 
@@ -316,7 +367,9 @@ fun WalletBalanceCard(
                 )
                 .clip(CircleShape)
                 .background(
-                    Colors.Cyan.copy(alpha = 0.16f)
+                    Colors.Cyan.copy(
+                        alpha = 0.16f
+                    )
                 )
         )
 
@@ -327,37 +380,59 @@ fun WalletBalanceCard(
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment =
+                    Alignment.CenterVertically
             ) {
                 Text(
-                    text = stringResource(id = R.string.available_balance),
-                    color = Color.White.copy(alpha = 0.78f),
-                    style = MaterialTheme.typography.bodyMedium
+                    text = stringResource(
+                        id = R.string
+                            .available_balance
+                    ),
+                    color = Color.White.copy(
+                        alpha = 0.78f
+                    ),
+                    style = MaterialTheme
+                        .typography
+                        .bodyMedium
                 )
 
-                Spacer(modifier = Modifier.weight(1f))
+                Spacer(
+                    modifier = Modifier.weight(1f)
+                )
 
                 TextButton(
                     onClick = onVisibilityClick,
-                    contentPadding = PaddingValues(
-                        horizontal = 8.dp,
-                        vertical = 0.dp
-                    ),
-                    colors = ButtonDefaults.textButtonColors(
-                        contentColor = Color.White
-                    )
+                    contentPadding =
+                        PaddingValues(
+                            horizontal = 8.dp,
+                            vertical = 0.dp
+                        ),
+                    colors =
+                        ButtonDefaults
+                            .textButtonColors(
+                                contentColor =
+                                    Color.White
+                            )
                 ) {
                     Text(
-                        text = if (isBalanceVisible) {
-                            stringResource(id = R.string.hide)
+                        text = if (
+                            isBalanceVisible
+                        ) {
+                            stringResource(
+                                id = R.string.hide
+                            )
                         } else {
-                            stringResource(id = R.string.show)
+                            stringResource(
+                                id = R.string.show
+                            )
                         }
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(
+                modifier = Modifier.height(10.dp)
+            )
 
             Text(
                 text = if (isBalanceVisible) {
@@ -369,34 +444,53 @@ fun WalletBalanceCard(
                 fontSize = 34.sp,
                 fontWeight = FontWeight.Bold,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                overflow =
+                    TextOverflow.Ellipsis
             )
 
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(
+                modifier = Modifier.weight(1f)
+            )
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment =
+                    Alignment.CenterVertically
             ) {
                 Column {
                     Text(
-                        text = stringResource(id = R.string.main_wallet),
+                        text = stringResource(
+                            id = R.string.main_wallet
+                        ),
                         color = Color.White,
-                        fontWeight = FontWeight.SemiBold
+                        fontWeight =
+                            FontWeight.SemiBold
                     )
 
                     Text(
-                        text = stringResource(id = R.string.secure_digital_account),
-                        color = Color.White.copy(alpha = 0.65f),
-                        style = MaterialTheme.typography.bodySmall
+                        text = stringResource(
+                            id = R.string
+                                .secure_digital_account
+                        ),
+                        color = Color.White.copy(
+                            alpha = 0.65f
+                        ),
+                        style = MaterialTheme
+                            .typography
+                            .bodySmall
                     )
                 }
 
-                Spacer(modifier = Modifier.weight(1f))
+                Spacer(
+                    modifier = Modifier.weight(1f)
+                )
 
                 Surface(
-                    shape = RoundedCornerShape(50.dp),
-                    color = Color.White.copy(alpha = 0.14f)
+                    shape =
+                        RoundedCornerShape(50.dp),
+                    color = Color.White.copy(
+                        alpha = 0.14f
+                    )
                 ) {
                     Text(
                         modifier = Modifier.padding(
@@ -405,14 +499,14 @@ fun WalletBalanceCard(
                         ),
                         text = currencyCode,
                         color = Color.White,
-                        fontWeight = FontWeight.Bold
+                        fontWeight =
+                            FontWeight.Bold
                     )
                 }
             }
         }
     }
 }
-
 
 @Composable
 fun WalletQuickActions(
@@ -423,9 +517,15 @@ fun WalletQuickActions(
         modifier = modifier.fillMaxWidth()
     ) {
         Text(
-            text = stringResource(id = R.string.fast_transactions),
-            color = Colors.TextPrimary,
-            style = MaterialTheme.typography.titleMedium,
+            text = stringResource(
+                id = R.string.fast_transactions
+            ),
+            color = MaterialTheme
+                .colorScheme
+                .onBackground,
+            style = MaterialTheme
+                .typography
+                .titleMedium,
             fontWeight = FontWeight.Bold
         )
 
@@ -433,14 +533,21 @@ fun WalletQuickActions(
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
+            horizontalArrangement =
+                Arrangement.spacedBy(10.dp)
         ) {
             WalletQuickActionItem(
                 modifier = Modifier.weight(1f),
-                title = stringResource(id = R.string.add_money),
+                title = stringResource(
+                    id = R.string.add_money
+                ),
                 icon = Icons.Outlined.Add,
-                iconColor = Colors.Blue,
-                backgroundColor = Colors.BlueSoft,
+                iconColor = MaterialTheme
+                    .colorScheme
+                    .primary,
+                backgroundColor = MaterialTheme
+                    .colorScheme
+                    .primaryContainer,
                 onClick = onTopUpClick
             )
         }
@@ -457,17 +564,25 @@ fun WalletQuickActionItem(
     onClick: () -> Unit
 ) {
     Card(
-        modifier = modifier.clickable(onClick = onClick),
+        modifier = modifier.clickable(
+            onClick = onClick
+        ),
         shape = RoundedCornerShape(18.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Colors.Surface
+            containerColor =
+                MaterialTheme
+                    .colorScheme
+                    .surface
         ),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 0.dp
-        ),
+        elevation =
+            CardDefaults.cardElevation(
+                defaultElevation = 0.dp
+            ),
         border = BorderStroke(
             width = 1.dp,
-            color = Colors.Border
+            color = MaterialTheme
+                .colorScheme
+                .outlineVariant
         )
     ) {
         Column(
@@ -477,7 +592,8 @@ fun WalletQuickActionItem(
                     horizontal = 6.dp,
                     vertical = 14.dp
                 ),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment =
+                Alignment.CenterHorizontally
         ) {
             Surface(
                 modifier = Modifier.size(42.dp),
@@ -485,10 +601,12 @@ fun WalletQuickActionItem(
                 color = backgroundColor
             ) {
                 Box(
-                    contentAlignment = Alignment.Center
+                    contentAlignment =
+                        Alignment.Center
                 ) {
                     Icon(
-                        modifier = Modifier.size(21.dp),
+                        modifier =
+                            Modifier.size(21.dp),
                         imageVector = icon,
                         contentDescription = null,
                         tint = iconColor
@@ -496,20 +614,26 @@ fun WalletQuickActionItem(
                 }
             }
 
-            Spacer(modifier = Modifier.height(9.dp))
+            Spacer(
+                modifier = Modifier.height(9.dp)
+            )
 
             Text(
                 text = title,
-                color = Colors.TextPrimary,
-                style = MaterialTheme.typography.labelMedium,
-                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme
+                    .colorScheme
+                    .onSurface,
+                style = MaterialTheme
+                    .typography
+                    .labelMedium,
+                fontWeight =
+                    FontWeight.SemiBold,
                 maxLines = 1,
                 textAlign = TextAlign.Center
             )
         }
     }
 }
-
 
 @Composable
 fun WalletChildrenSection(
@@ -522,29 +646,46 @@ fun WalletChildrenSection(
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment =
+                Alignment.CenterVertically
         ) {
             Text(
-                text = stringResource(id = R.string.linked_accounts),
-                color = Colors.TextPrimary,
-                style = MaterialTheme.typography.titleMedium,
+                text = stringResource(
+                    id = R.string.linked_accounts
+                ),
+                color = MaterialTheme
+                    .colorScheme
+                    .onBackground,
+                style = MaterialTheme
+                    .typography
+                    .titleMedium,
                 fontWeight = FontWeight.Bold
             )
 
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(
+                modifier = Modifier.width(8.dp)
+            )
 
             Surface(
                 shape = CircleShape,
-                color = Colors.BlueSoft
+                color = MaterialTheme
+                    .colorScheme
+                    .primaryContainer
             ) {
                 Text(
                     modifier = Modifier.padding(
                         horizontal = 9.dp,
                         vertical = 4.dp
                     ),
-                    text = children.size.toString(),
-                    color = Colors.Blue,
-                    style = MaterialTheme.typography.labelMedium,
+                    text = children
+                        .size
+                        .toString(),
+                    color = MaterialTheme
+                        .colorScheme
+                        .onPrimaryContainer,
+                    style = MaterialTheme
+                        .typography
+                        .labelMedium,
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -556,7 +697,8 @@ fun WalletChildrenSection(
             WalletEmptyChildrenContent()
         } else {
             LazyRow(
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                horizontalArrangement =
+                    Arrangement.spacedBy(12.dp)
             ) {
                 items(
                     items = children,
@@ -586,14 +728,20 @@ fun ChildWalletCard(
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(22.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Colors.Surface
+            containerColor =
+                MaterialTheme
+                    .colorScheme
+                    .surface
         ),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 0.dp
-        ),
+        elevation =
+            CardDefaults.cardElevation(
+                defaultElevation = 0.dp
+            ),
         border = BorderStroke(
             width = 1.dp,
-            color = Colors.Border
+            color = MaterialTheme
+                .colorScheme
+                .outlineVariant
         )
     ) {
         Column(
@@ -601,88 +749,134 @@ fun ChildWalletCard(
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment =
+                    Alignment.CenterVertically
             ) {
                 Surface(
                     modifier = Modifier.size(44.dp),
                     shape = CircleShape,
-                    color = Colors.OrangeSoft
+                    color = MaterialTheme
+                        .colorScheme
+                        .secondaryContainer
                 ) {
                     Box(
-                        contentAlignment = Alignment.Center
+                        contentAlignment =
+                            Alignment.Center
                     ) {
                         Text(
                             text = child.name
                                 .firstOrNull()
                                 ?.uppercase()
                                 .orEmpty(),
-                            color = Color(0xFFDC7A1D),
-                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme
+                                .colorScheme
+                                .onSecondaryContainer,
+                            fontWeight =
+                                FontWeight.Bold,
                             fontSize = 18.sp
                         )
                     }
                 }
 
-                Spacer(modifier = Modifier.weight(1f))
+                Spacer(
+                    modifier = Modifier.weight(1f)
+                )
 
                 Surface(
-                    shape = RoundedCornerShape(50.dp),
-                    color = Colors.PositiveSoft
+                    shape =
+                        RoundedCornerShape(50.dp),
+                    color = MaterialTheme
+                        .colorScheme
+                        .tertiaryContainer
                 ) {
                     Text(
-                        modifier = Modifier.padding(
-                            horizontal = 8.dp,
-                            vertical = 4.dp
+                        modifier =
+                            Modifier.padding(
+                                horizontal = 8.dp,
+                                vertical = 4.dp
+                            ),
+                        text = stringResource(
+                            id = R.string.active
                         ),
-                        text = stringResource(id = R.string.active),
-                        color = Colors.Positive,
-                        style = MaterialTheme.typography.labelSmall,
-                        fontWeight = FontWeight.SemiBold
+                        color = MaterialTheme
+                            .colorScheme
+                            .onTertiaryContainer,
+                        style = MaterialTheme
+                            .typography
+                            .labelSmall,
+                        fontWeight =
+                            FontWeight.SemiBold
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.height(14.dp))
+            Spacer(
+                modifier = Modifier.height(14.dp)
+            )
 
             Text(
                 text = child.name,
-                color = Colors.TextPrimary,
-                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme
+                    .colorScheme
+                    .onSurface,
+                style = MaterialTheme
+                    .typography
+                    .titleSmall,
                 fontWeight = FontWeight.Bold,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                overflow =
+                    TextOverflow.Ellipsis
             )
 
-            Spacer(modifier = Modifier.height(3.dp))
+            Spacer(
+                modifier = Modifier.height(3.dp)
+            )
 
             Text(
                 text = child.grade,
-                color = Colors.TextSecondary,
-                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme
+                    .colorScheme
+                    .onSurfaceVariant,
+                style = MaterialTheme
+                    .typography
+                    .bodySmall,
                 maxLines = 1
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Text(
-                text = stringResource(id = R.string.balance),
-                color = Colors.TextSecondary,
-                style = MaterialTheme.typography.labelSmall
+            Spacer(
+                modifier = Modifier.height(16.dp)
             )
 
-            Spacer(modifier = Modifier.height(3.dp))
+            Text(
+                text = stringResource(
+                    id = R.string.balance
+                ),
+                color = MaterialTheme
+                    .colorScheme
+                    .onSurfaceVariant,
+                style = MaterialTheme
+                    .typography
+                    .labelSmall
+            )
+
+            Spacer(
+                modifier = Modifier.height(3.dp)
+            )
 
             Text(
                 text = child.balanceText,
-                color = Colors.TextPrimary,
-                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme
+                    .colorScheme
+                    .onSurface,
+                style = MaterialTheme
+                    .typography
+                    .titleMedium,
                 fontWeight = FontWeight.Bold,
                 maxLines = 1
             )
         }
     }
 }
-
 
 @Composable
 fun WalletEmptyChildrenContent(
@@ -692,40 +886,58 @@ fun WalletEmptyChildrenContent(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Colors.Surface
+            containerColor =
+                MaterialTheme
+                    .colorScheme
+                    .surface
         ),
         border = BorderStroke(
             width = 1.dp,
-            color = Colors.Border
+            color = MaterialTheme
+                .colorScheme
+                .outlineVariant
         )
     ) {
         Text(
             modifier = Modifier.padding(20.dp),
-            text = stringResource(id = R.string.there_is_no_linked_child_account_yet),
-            color = Colors.TextSecondary,
-            style = MaterialTheme.typography.bodyMedium
+            text = stringResource(
+                id = R.string
+                    .there_is_no_linked_child_account_yet
+            ),
+            color = MaterialTheme
+                .colorScheme
+                .onSurfaceVariant,
+            style = MaterialTheme
+                .typography
+                .bodyMedium
         )
     }
 }
 
-
 @Composable
 fun WalletRecentTransactionsCard(
-    transactions: List<WalletTransactionUiModel>,
+    transactions:
+    List<WalletTransactionUiModel>,
     modifier: Modifier = Modifier
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Colors.Surface
+            containerColor =
+                MaterialTheme
+                    .colorScheme
+                    .surface
         ),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 0.dp
-        ),
+        elevation =
+            CardDefaults.cardElevation(
+                defaultElevation = 0.dp
+            ),
         border = BorderStroke(
             width = 1.dp,
-            color = Colors.Border
+            color = MaterialTheme
+                .colorScheme
+                .outlineVariant
         )
     ) {
         Column(
@@ -733,39 +945,63 @@ fun WalletRecentTransactionsCard(
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment =
+                    Alignment.CenterVertically
             ) {
                 Column(
                     modifier = Modifier.weight(1f)
                 ) {
                     Text(
-                        text = stringResource(id = R.string.final_processes),
-                        color = Colors.TextPrimary,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
+                        text = stringResource(
+                            id = R.string
+                                .final_processes
+                        ),
+                        color = MaterialTheme
+                            .colorScheme
+                            .onSurface,
+                        style = MaterialTheme
+                            .typography
+                            .titleMedium,
+                        fontWeight =
+                            FontWeight.Bold
                     )
 
                     Text(
-                        text = stringResource(id = R.string.the_most_recent_money_movements),
-                        color = Colors.TextSecondary,
-                        style = MaterialTheme.typography.bodySmall
+                        text = stringResource(
+                            id = R.string
+                                .the_most_recent_money_movements
+                        ),
+                        color = MaterialTheme
+                            .colorScheme
+                            .onSurfaceVariant,
+                        style = MaterialTheme
+                            .typography
+                            .bodySmall
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(
+                modifier = Modifier.height(8.dp)
+            )
 
             if (transactions.isEmpty()) {
                 WalletEmptyTransactionsContent()
             } else {
-                transactions.forEachIndexed { index, transaction ->
+                transactions.forEachIndexed {
+                        index,
+                        transaction ->
                     WalletTransactionItem(
                         transaction = transaction
                     )
 
-                    if (index != transactions.lastIndex) {
+                    if (
+                        index != transactions.lastIndex
+                    ) {
                         HorizontalDivider(
-                            color = Colors.Border
+                            color = MaterialTheme
+                                .colorScheme
+                                .outlineVariant
                         )
                     }
                 }
@@ -783,33 +1019,51 @@ fun WalletTransactionItem(
         modifier = modifier
             .fillMaxWidth()
             .padding(vertical = 11.dp),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment =
+            Alignment.CenterVertically
     ) {
+        val indicatorContainerColor =
+            if (transaction.isIncome) {
+                MaterialTheme
+                    .colorScheme
+                    .tertiaryContainer
+            } else {
+                MaterialTheme
+                    .colorScheme
+                    .errorContainer
+            }
+
+        val indicatorColor =
+            if (transaction.isIncome) {
+                MaterialTheme
+                    .colorScheme
+                    .onTertiaryContainer
+            } else {
+                MaterialTheme
+                    .colorScheme
+                    .onErrorContainer
+            }
+
         Surface(
             modifier = Modifier.size(46.dp),
             shape = CircleShape,
-            color = if (transaction.isIncome) {
-                Colors.PositiveSoft
-            } else {
-                Colors.NegativeSoft
-            }
+            color = indicatorContainerColor
         ) {
             Box(
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     modifier = Modifier.size(21.dp),
-                    imageVector = if (transaction.isIncome) {
-                        Icons.Outlined.ArrowDownward
-                    } else {
-                        Icons.Outlined.ArrowUpward
-                    },
+                    imageVector =
+                        if (transaction.isIncome) {
+                            Icons.Outlined
+                                .ArrowDownward
+                        } else {
+                            Icons.Outlined
+                                .ArrowUpward
+                        },
                     contentDescription = null,
-                    tint = if (transaction.isIncome) {
-                        Colors.Positive
-                    } else {
-                        Colors.Negative
-                    }
+                    tint = indicatorColor
                 )
             }
         }
@@ -821,19 +1075,31 @@ fun WalletTransactionItem(
         ) {
             Text(
                 text = transaction.title,
-                color = Colors.TextPrimary,
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme
+                    .colorScheme
+                    .onSurface,
+                style = MaterialTheme
+                    .typography
+                    .bodyMedium,
+                fontWeight =
+                    FontWeight.SemiBold,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                overflow =
+                    TextOverflow.Ellipsis
             )
 
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(
+                modifier = Modifier.height(4.dp)
+            )
 
             Text(
                 text = transaction.dateText,
-                color = Colors.TextSecondary,
-                style = MaterialTheme.typography.bodySmall
+                color = MaterialTheme
+                    .colorScheme
+                    .onSurfaceVariant,
+                style = MaterialTheme
+                    .typography
+                    .bodySmall
             )
         }
 
@@ -841,18 +1107,25 @@ fun WalletTransactionItem(
 
         Text(
             text = transaction.amountText,
-            color = if (transaction.isIncome) {
-                Colors.Positive
+            color = if (
+                transaction.isIncome
+            ) {
+                MaterialTheme
+                    .colorScheme
+                    .tertiary
             } else {
-                Colors.TextPrimary
+                MaterialTheme
+                    .colorScheme
+                    .onSurface
             },
-            style = MaterialTheme.typography.bodyMedium,
+            style = MaterialTheme
+                .typography
+                .bodyMedium,
             fontWeight = FontWeight.Bold,
             maxLines = 1
         )
     }
 }
-
 
 @Composable
 fun WalletEmptyTransactionsContent(
@@ -862,21 +1135,29 @@ fun WalletEmptyTransactionsContent(
         modifier = modifier
             .fillMaxWidth()
             .padding(vertical = 32.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment =
+            Alignment.CenterHorizontally
     ) {
         Surface(
             modifier = Modifier.size(64.dp),
             shape = CircleShape,
-            color = Colors.BlueSoft
+            color = MaterialTheme
+                .colorScheme
+                .primaryContainer
         ) {
             Box(
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     modifier = Modifier.size(29.dp),
-                    imageVector = Icons.AutoMirrored.Outlined.ReceiptLong,
+                    imageVector =
+                        Icons.AutoMirrored
+                            .Outlined
+                            .ReceiptLong,
                     contentDescription = null,
-                    tint = Colors.Blue
+                    tint = MaterialTheme
+                        .colorScheme
+                        .primary
                 )
             }
         }
@@ -884,23 +1165,36 @@ fun WalletEmptyTransactionsContent(
         Spacer(modifier = Modifier.height(14.dp))
 
         Text(
-            text = stringResource(id = R.string.no_transactions_have_been_made_yet),
-            color = Colors.TextPrimary,
-            style = MaterialTheme.typography.titleSmall,
+            text = stringResource(
+                id = R.string
+                    .no_transactions_have_been_made_yet
+            ),
+            color = MaterialTheme
+                .colorScheme
+                .onSurface,
+            style = MaterialTheme
+                .typography
+                .titleSmall,
             fontWeight = FontWeight.Bold
         )
 
         Spacer(modifier = Modifier.height(6.dp))
 
         Text(
-            text = stringResource(id = R.string.your_first_money_transaction_will_be_displayed_here),
-            color = Colors.TextSecondary,
-            style = MaterialTheme.typography.bodySmall,
+            text = stringResource(
+                id = R.string
+                    .your_first_money_transaction_will_be_displayed_here
+            ),
+            color = MaterialTheme
+                .colorScheme
+                .onSurfaceVariant,
+            style = MaterialTheme
+                .typography
+                .bodySmall,
             textAlign = TextAlign.Center
         )
     }
 }
-
 
 @Composable
 fun WalletLoadingContent(
@@ -910,33 +1204,48 @@ fun WalletLoadingContent(
         modifier = modifier
             .fillMaxSize()
             .padding(32.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        verticalArrangement =
+            Arrangement.Center,
+        horizontalAlignment =
+            Alignment.CenterHorizontally
     ) {
         CircularProgressIndicator(
-            color = Colors.Blue
+            color = MaterialTheme
+                .colorScheme
+                .primary
         )
 
         Spacer(modifier = Modifier.height(18.dp))
 
         Text(
-            text = stringResource(id = R.string.the_wallet_is_being_prepared),
-            color = Colors.TextPrimary,
-            style = MaterialTheme.typography.titleMedium,
+            text = stringResource(
+                id = R.string
+                    .the_wallet_is_being_prepared
+            ),
+            color = MaterialTheme
+                .colorScheme
+                .onBackground,
+            style = MaterialTheme
+                .typography
+                .titleMedium,
             fontWeight = FontWeight.Bold
         )
 
         Spacer(modifier = Modifier.height(6.dp))
 
         Text(
-            text = stringResource(id = R.string.balance_and_transactions_are_being_loaded),
+            text = stringResource(
+                id = R.string
+                    .balance_and_transactions_are_being_loaded
+            ),
             modifier = Modifier.fillMaxWidth(),
-            color = Colors.TextSecondary,
+            color = MaterialTheme
+                .colorScheme
+                .onSurfaceVariant,
             textAlign = TextAlign.Center
         )
     }
 }
-
 
 @Composable
 fun WalletErrorContent(
@@ -948,23 +1257,23 @@ fun WalletErrorContent(
         modifier = modifier.fillMaxWidth(),
         shape = RoundedCornerShape(26.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Colors.Surface
+            containerColor = MaterialTheme.colorScheme.surface
         ),
         border = BorderStroke(
             width = 1.dp,
-            color = Colors.Border
+            color = MaterialTheme.colorScheme.outlineVariant
         )
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(30.dp),
+                .padding(horizontal = 24.dp, vertical = 28.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Surface(
                 modifier = Modifier.size(72.dp),
                 shape = CircleShape,
-                color = Colors.NegativeSoft
+                color = MaterialTheme.colorScheme.errorContainer
             ) {
                 Box(
                     contentAlignment = Alignment.Center
@@ -973,7 +1282,7 @@ fun WalletErrorContent(
                         modifier = Modifier.size(32.dp),
                         imageVector = Icons.Outlined.Refresh,
                         contentDescription = null,
-                        tint = Colors.Negative
+                        tint = MaterialTheme.colorScheme.onErrorContainer
                     )
                 }
             }
@@ -982,17 +1291,19 @@ fun WalletErrorContent(
 
             Text(
                 text = stringResource(id = R.string.something_went_wrong),
-                color = Colors.TextPrimary,
+                color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
             )
 
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
                 text = message,
-                color = Colors.TextSecondary,
-                textAlign = TextAlign.Center
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.bodyMedium
             )
 
             Spacer(modifier = Modifier.height(22.dp))
@@ -1001,7 +1312,8 @@ fun WalletErrorContent(
                 onClick = onRetry,
                 shape = RoundedCornerShape(14.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Colors.Blue
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
                 )
             ) {
                 Icon(
@@ -1011,12 +1323,13 @@ fun WalletErrorContent(
 
                 Spacer(modifier = Modifier.width(8.dp))
 
-                Text(text = stringResource(id = R.string.try_again))
+                Text(
+                    text = stringResource(id = R.string.try_again)
+                )
             }
         }
     }
 }
-
 
 @Composable
 fun WalletBottomNavigation(
@@ -1025,7 +1338,9 @@ fun WalletBottomNavigation(
     onProfileClick: () -> Unit
 ) {
     NavigationBar(
-        containerColor = Colors.Surface,
+        containerColor = MaterialTheme
+            .colorScheme
+            .surface,
         tonalElevation = 8.dp
     ) {
         NavigationBarItem(
@@ -1033,12 +1348,18 @@ fun WalletBottomNavigation(
             onClick = onWalletClick,
             icon = {
                 Icon(
-                    imageVector = Icons.Outlined.AccountBalanceWallet,
+                    imageVector =
+                        Icons.Outlined
+                            .AccountBalanceWallet,
                     contentDescription = null
                 )
             },
             label = {
-                Text(text = stringResource(id = R.string.wallet))
+                Text(
+                    text = stringResource(
+                        id = R.string.wallet
+                    )
+                )
             },
             colors = walletNavigationColors()
         )
@@ -1048,12 +1369,17 @@ fun WalletBottomNavigation(
             onClick = onActivityClick,
             icon = {
                 Icon(
-                    imageVector = Icons.Outlined.History,
+                    imageVector =
+                        Icons.Outlined.History,
                     contentDescription = null
                 )
             },
             label = {
-                Text(text = stringResource(id = R.string.activity))
+                Text(
+                    text = stringResource(
+                        id = R.string.activity
+                    )
+                )
             },
             colors = walletNavigationColors()
         )
@@ -1063,12 +1389,17 @@ fun WalletBottomNavigation(
             onClick = onProfileClick,
             icon = {
                 Icon(
-                    imageVector = Icons.Outlined.Person,
+                    imageVector =
+                        Icons.Outlined.Person,
                     contentDescription = null
                 )
             },
             label = {
-                Text(text = stringResource(id = R.string.profile))
+                Text(
+                    text = stringResource(
+                        id = R.string.profile
+                    )
+                )
             },
             colors = walletNavigationColors()
         )
@@ -1078,41 +1409,74 @@ fun WalletBottomNavigation(
 @Composable
 private fun walletNavigationColors() =
     NavigationBarItemDefaults.colors(
-        selectedIconColor = Colors.Blue,
-        selectedTextColor = Colors.Blue,
-        indicatorColor = Colors.BlueSoft,
-        unselectedIconColor = Colors.TextSecondary,
-        unselectedTextColor = Colors.TextSecondary
+        selectedIconColor =
+            MaterialTheme
+                .colorScheme
+                .primary,
+        selectedTextColor =
+            MaterialTheme
+                .colorScheme
+                .primary,
+        indicatorColor =
+            MaterialTheme
+                .colorScheme
+                .primaryContainer,
+        unselectedIconColor =
+            MaterialTheme
+                .colorScheme
+                .onSurfaceVariant,
+        unselectedTextColor =
+            MaterialTheme
+                .colorScheme
+                .onSurfaceVariant
     )
 
 @StringRes
 fun WalletScenario.displayNameRes(): Int {
     return when (this) {
-        WalletScenario.LOADED -> R.string.wallet_scenario_loaded
-        WalletScenario.EMPTY -> R.string.wallet_scenario_empty
-        WalletScenario.ERROR -> R.string.wallet_scenario_error
+        WalletScenario.LOADED ->
+            R.string.wallet_scenario_loaded
+
+        WalletScenario.EMPTY ->
+            R.string.wallet_scenario_empty
+
+        WalletScenario.ERROR ->
+            R.string.wallet_scenario_error
     }
 }
 
 @Composable
-private fun walletPreviewDashboard(): WalletDashboardUiModel {
+private fun walletPreviewDashboard():
+        WalletDashboardUiModel {
     val children = listOf(
         ChildWalletUiModel(
             id = "1",
-            name = stringResource(R.string.preview_child_mert_name),
-            grade = stringResource(R.string.preview_grade_eighth),
+            name = stringResource(
+                R.string.preview_child_mert_name
+            ),
+            grade = stringResource(
+                R.string.preview_grade_eighth
+            ),
             balanceText = "₺1,250.00"
         ),
         ChildWalletUiModel(
             id = "2",
-            name = stringResource(R.string.preview_child_ece_name),
-            grade = stringResource(R.string.preview_grade_fifth),
+            name = stringResource(
+                R.string.preview_child_ece_name
+            ),
+            grade = stringResource(
+                R.string.preview_grade_fifth
+            ),
             balanceText = "₺780.50"
         ),
         ChildWalletUiModel(
             id = "3",
-            name = stringResource(R.string.preview_child_can_name),
-            grade = stringResource(R.string.preview_grade_third),
+            name = stringResource(
+                R.string.preview_child_can_name
+            ),
+            grade = stringResource(
+                R.string.preview_grade_third
+            ),
             balanceText = "₺540.00"
         )
     )
@@ -1121,7 +1485,8 @@ private fun walletPreviewDashboard(): WalletDashboardUiModel {
         WalletTransactionUiModel(
             id = "1",
             title = stringResource(
-                R.string.preview_transaction_wallet_top_up
+                R.string
+                    .preview_transaction_wallet_top_up
             ),
             dateText = "Aug 01, 10:30",
             amountText = "+₺2,000.00",
@@ -1130,7 +1495,8 @@ private fun walletPreviewDashboard(): WalletDashboardUiModel {
         WalletTransactionUiModel(
             id = "2",
             title = stringResource(
-                R.string.preview_transaction_school_cafeteria
+                R.string
+                    .preview_transaction_school_cafeteria
             ),
             dateText = "Jul 31, 13:42",
             amountText = "-₺145.50",
@@ -1139,7 +1505,8 @@ private fun walletPreviewDashboard(): WalletDashboardUiModel {
         WalletTransactionUiModel(
             id = "3",
             title = stringResource(
-                R.string.preview_transaction_bookstore
+                R.string
+                    .preview_transaction_bookstore
             ),
             dateText = "Jul 30, 17:15",
             amountText = "-₺320.00",
@@ -1156,78 +1523,121 @@ private fun walletPreviewDashboard(): WalletDashboardUiModel {
 }
 
 @Preview(
-    name = "Wallet Loaded Screen",
+    name = "Wallet Loaded - Light",
     showBackground = true,
     showSystemUi = true,
     widthDp = 411,
     heightDp = 915
+)
+@Preview(
+    name = "Wallet Loaded - Dark",
+    showBackground = true,
+    showSystemUi = true,
+    widthDp = 411,
+    heightDp = 915,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
 )
 @Composable
 private fun WalletDashboardLoadedPreview() {
-    MaterialTheme {
+    MovaTechnologyCaseTheme {
         WalletDashboardScreenContent(
-            uiState = WalletDashboardContract.UiState(
-                isLoading = false,
-                selectedScenario = WalletScenario.LOADED,
-                dashboard = walletPreviewDashboard()
-            ),
+            uiState =
+                WalletDashboardContract.UiState(
+                    isLoading = false,
+                    selectedScenario =
+                        WalletScenario.LOADED,
+                    dashboard =
+                        walletPreviewDashboard()
+                ),
             onEvent = {}
         )
     }
 }
 
 @Preview(
-    name = "Wallet Empty Screen",
+    name = "Wallet Empty - Light",
     showBackground = true,
     showSystemUi = true,
     widthDp = 411,
     heightDp = 915
+)
+@Preview(
+    name = "Wallet Empty - Dark",
+    showBackground = true,
+    showSystemUi = true,
+    widthDp = 411,
+    heightDp = 915,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
 )
 @Composable
 private fun WalletDashboardEmptyPreview() {
-    MaterialTheme {
+    MovaTechnologyCaseTheme {
         WalletDashboardScreenContent(
-            uiState = WalletDashboardContract.UiState(
-                isLoading = false,
-                selectedScenario = WalletScenario.EMPTY,
-                dashboard = WalletDashboardUiModel(
-                    balanceText = "₺0.00",
-                    currencyCode = "TRY",
-                    children = emptyList(),
-                    transactions = emptyList()
+            uiState =
+                WalletDashboardContract.UiState(
+                    isLoading = false,
+                    selectedScenario =
+                        WalletScenario.EMPTY,
+                    dashboard =
+                        WalletDashboardUiModel(
+                            balanceText =
+                                "₺0.00",
+                            currencyCode =
+                                "TRY",
+                            children =
+                                emptyList(),
+                            transactions =
+                                emptyList()
+                        ),
+                    error = null
                 ),
-                error = null
-            ),
             onEvent = {}
         )
     }
 }
 
 @Preview(
-    name = "Wallet Loading Screen",
+    name = "Wallet Loading - Light",
     showBackground = true,
     showSystemUi = true,
     widthDp = 411,
     heightDp = 915
 )
+@Preview(
+    name = "Wallet Loading - Dark",
+    showBackground = true,
+    showSystemUi = true,
+    widthDp = 411,
+    heightDp = 915,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
 @Composable
 private fun WalletDashboardLoadingPreview() {
-    MaterialTheme {
+    MovaTechnologyCaseTheme {
         WalletDashboardScreenContent(
-            uiState = WalletDashboardContract.UiState(
-                isLoading = true
-            ),
+            uiState =
+                WalletDashboardContract.UiState(
+                    isLoading = true
+                ),
             onEvent = {}
         )
     }
 }
 
 @Preview(
-    name = "Wallet Error Screen",
+    name = "Wallet Error - Light",
     showBackground = true,
     showSystemUi = true,
     widthDp = 411,
     heightDp = 915
+)
+@Preview(
+    name = "Wallet Error - Dark",
+    showBackground = true,
+    showSystemUi = true,
+    widthDp = 411,
+    heightDp = 915,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
 )
 @Composable
 private fun WalletDashboardErrorPreview() {
@@ -1235,13 +1645,15 @@ private fun WalletDashboardErrorPreview() {
         id = R.string.preview_wallet_error
     )
 
-    MaterialTheme {
+    MovaTechnologyCaseTheme {
         WalletDashboardScreenContent(
-            uiState = WalletDashboardContract.UiState(
-                isLoading = false,
-                selectedScenario = WalletScenario.ERROR,
-                error = errorMessage
-            ),
+            uiState =
+                WalletDashboardContract.UiState(
+                    isLoading = false,
+                    selectedScenario =
+                        WalletScenario.ERROR,
+                    error = errorMessage
+                ),
             onEvent = {}
         )
     }

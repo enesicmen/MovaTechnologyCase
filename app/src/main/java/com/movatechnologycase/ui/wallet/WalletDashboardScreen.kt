@@ -1,5 +1,6 @@
 package com.movatechnologycase.ui.wallet
 
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,9 +13,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.movatechnologycase.core.design.Colors
-import com.movatechnologycase.data.repository.WalletScenario
 import com.movatechnologycase.R
+import com.movatechnologycase.data.repository.WalletScenario
+import com.movatechnologycase.ui.theme.MovaTechnologyCaseTheme
 
 @Composable
 fun WalletDashboardScreen(
@@ -47,7 +48,7 @@ fun WalletDashboardScreenContent(
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        containerColor = Colors.Background,
+        containerColor = MaterialTheme.colorScheme.background,
         bottomBar = {
             WalletBottomNavigation(
                 onWalletClick = {},
@@ -60,13 +61,24 @@ fun WalletDashboardScreenContent(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
-                .background(Colors.Background)
+                .background(
+                    MaterialTheme.colorScheme.background
+                )
         ) {
             when {
                 uiState.isLoading -> {
                     WalletStateContent(
-                        selectedScenario = uiState.selectedScenario,
-                        onScenarioSelected = { scenario -> onEvent(WalletDashboardContract.WalletEvent.OnScenarioSelected(scenario)) }
+                        selectedScenario =
+                            uiState.selectedScenario,
+                        onScenarioSelected = { scenario ->
+                            onEvent(
+                                WalletDashboardContract
+                                    .WalletEvent
+                                    .OnScenarioSelected(
+                                        scenario
+                                    )
+                            )
+                        }
                     ) {
                         WalletLoadingContent()
                     }
@@ -74,12 +86,27 @@ fun WalletDashboardScreenContent(
 
                 uiState.error != null -> {
                     WalletStateContent(
-                        selectedScenario = uiState.selectedScenario,
-                        onScenarioSelected = { scenario -> onEvent(WalletDashboardContract.WalletEvent.OnScenarioSelected(scenario)) }
+                        selectedScenario =
+                            uiState.selectedScenario,
+                        onScenarioSelected = { scenario ->
+                            onEvent(
+                                WalletDashboardContract
+                                    .WalletEvent
+                                    .OnScenarioSelected(
+                                        scenario
+                                    )
+                            )
+                        }
                     ) {
                         WalletErrorContent(
                             message = uiState.error,
-                            onRetry = { onEvent(WalletDashboardContract.WalletEvent.OnRetryClick) }
+                            onRetry = {
+                                onEvent(
+                                    WalletDashboardContract
+                                        .WalletEvent
+                                        .OnRetryClick
+                                )
+                            }
                         )
                     }
                 }
@@ -87,10 +114,26 @@ fun WalletDashboardScreenContent(
                 uiState.dashboard != null -> {
                     WalletLoadedContent(
                         dashboard = uiState.dashboard,
-                        selectedScenario = uiState.selectedScenario,
-                        isBalanceVisible = uiState.isBalanceVisible,
-                        onScenarioSelected = { scenario -> onEvent(WalletDashboardContract.WalletEvent.OnScenarioSelected(scenario)) },
-                        onBalanceVisibilityClick = { onEvent(WalletDashboardContract.WalletEvent.OnBalanceVisibilityClick) },
+                        selectedScenario =
+                            uiState.selectedScenario,
+                        isBalanceVisible =
+                            uiState.isBalanceVisible,
+                        onScenarioSelected = { scenario ->
+                            onEvent(
+                                WalletDashboardContract
+                                    .WalletEvent
+                                    .OnScenarioSelected(
+                                        scenario
+                                    )
+                            )
+                        },
+                        onBalanceVisibilityClick = {
+                            onEvent(
+                                WalletDashboardContract
+                                    .WalletEvent
+                                    .OnBalanceVisibilityClick
+                            )
+                        },
                         onTopUpClick = onTopUpClick,
                         onChildClick = onChildClick
                     )
@@ -98,12 +141,30 @@ fun WalletDashboardScreenContent(
 
                 else -> {
                     WalletStateContent(
-                        selectedScenario = uiState.selectedScenario,
-                        onScenarioSelected = { scenario -> onEvent(WalletDashboardContract.WalletEvent.OnScenarioSelected(scenario)) }
+                        selectedScenario =
+                            uiState.selectedScenario,
+                        onScenarioSelected = { scenario ->
+                            onEvent(
+                                WalletDashboardContract
+                                    .WalletEvent
+                                    .OnScenarioSelected(
+                                        scenario
+                                    )
+                            )
+                        }
                     ) {
                         WalletErrorContent(
-                            message = stringResource(id = R.string.wallet_information_could_not_be_found),
-                            onRetry = { onEvent(WalletDashboardContract.WalletEvent.OnRetryClick) }
+                            message = stringResource(
+                                id = R.string
+                                    .wallet_information_could_not_be_found
+                            ),
+                            onRetry = {
+                                onEvent(
+                                    WalletDashboardContract
+                                        .WalletEvent
+                                        .OnRetryClick
+                                )
+                            }
                         )
                     }
                 }
@@ -113,15 +174,23 @@ fun WalletDashboardScreenContent(
 }
 
 @Preview(
-    name = "Wallet Dashboard Screen",
+    name = "Wallet Dashboard - Light",
     showBackground = true,
     showSystemUi = true,
     widthDp = 411,
     heightDp = 915
 )
+@Preview(
+    name = "Wallet Dashboard - Dark",
+    showBackground = true,
+    showSystemUi = true,
+    widthDp = 411,
+    heightDp = 915,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
 @Composable
 private fun WalletDashboardScreenPreview() {
-    MaterialTheme {
+    MovaTechnologyCaseTheme {
         WalletDashboardScreenContent(
             uiState = WalletDashboardContract.UiState(
                 isLoading = false,
@@ -137,25 +206,31 @@ private fun WalletDashboardScreenPreview() {
                         ChildWalletUiModel(
                             id = "1",
                             name = stringResource(
-                                id = R.string.preview_child_mert_name
+                                id = R.string
+                                    .preview_child_mert_name
                             ),
                             grade = stringResource(
-                                id = R.string.preview_child_mert_grade
+                                id = R.string
+                                    .preview_child_mert_grade
                             ),
                             balanceText = stringResource(
-                                id = R.string.preview_child_mert_balance
+                                id = R.string
+                                    .preview_child_mert_balance
                             )
                         ),
                         ChildWalletUiModel(
                             id = "2",
                             name = stringResource(
-                                id = R.string.preview_child_ece_name
+                                id = R.string
+                                    .preview_child_ece_name
                             ),
                             grade = stringResource(
-                                id = R.string.preview_child_ece_grade
+                                id = R.string
+                                    .preview_child_ece_grade
                             ),
                             balanceText = stringResource(
-                                id = R.string.preview_child_ece_balance
+                                id = R.string
+                                    .preview_child_ece_balance
                             )
                         )
                     ),
@@ -163,26 +238,32 @@ private fun WalletDashboardScreenPreview() {
                         WalletTransactionUiModel(
                             id = "1",
                             title = stringResource(
-                                id = R.string.preview_transaction_wallet_top_up
+                                id = R.string
+                                    .preview_transaction_wallet_top_up
                             ),
                             dateText = stringResource(
-                                id = R.string.preview_transaction_wallet_top_up_date
+                                id = R.string
+                                    .preview_transaction_wallet_top_up_date
                             ),
                             amountText = stringResource(
-                                id = R.string.preview_transaction_wallet_top_up_amount
+                                id = R.string
+                                    .preview_transaction_wallet_top_up_amount
                             ),
                             isIncome = true
                         ),
                         WalletTransactionUiModel(
                             id = "2",
                             title = stringResource(
-                                id = R.string.preview_transaction_school_cafeteria
+                                id = R.string
+                                    .preview_transaction_school_cafeteria
                             ),
                             dateText = stringResource(
-                                id = R.string.preview_transaction_school_cafeteria_date
+                                id = R.string
+                                    .preview_transaction_school_cafeteria_date
                             ),
                             amountText = stringResource(
-                                id = R.string.preview_transaction_school_cafeteria_amount
+                                id = R.string
+                                    .preview_transaction_school_cafeteria_amount
                             ),
                             isIncome = false
                         )
